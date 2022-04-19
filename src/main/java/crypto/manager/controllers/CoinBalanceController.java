@@ -1,36 +1,26 @@
 package crypto.manager.controllers;
 
-import crypto.manager.domain.Customer;
-import crypto.manager.services.CustomerService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import crypto.manager.domain.CoinBalance;
+import crypto.manager.services.CoinBalanceService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/customers")
-public class CustomerController {
+@RequestMapping("/balances")
+public class CoinBalanceController {
 
-    private final CustomerService customerService;
+    private final CoinBalanceService coinBalanceService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
+    public CoinBalanceController(CoinBalanceService coinBalanceService) {
+        this.coinBalanceService = coinBalanceService;
     }
 
     @GetMapping
-    List<Customer> getAllCustomers(){
-        return customerService.findAllCustomers();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Customer> getCustomerById(@PathVariable Long id){
-        return customerService.findCustomerById(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Customer saveCustomer(@RequestBody Customer customer){
-        return customerService.saveCustomer(customer);
+    List<CoinBalance> getAllCoinBalanceToday(){
+        return coinBalanceService.findByDate(LocalDate.now());
     }
 }

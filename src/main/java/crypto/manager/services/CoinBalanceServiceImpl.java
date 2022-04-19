@@ -22,6 +22,11 @@ public class CoinBalanceServiceImpl implements CoinBalanceService {
     }
 
     @Override
+    public List<CoinBalance> findByDate(LocalDate date) {
+        return coinBalanceRepository.findByDate(date);
+    }
+
+    @Override
     public List<CoinBalance> saveAll(List<CoinBalance> coinBalances) {
         return coinBalanceRepository.saveAllAndFlush(coinBalances);
     }

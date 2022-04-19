@@ -8,6 +8,8 @@ import java.util.List;
 public interface CoinBalanceService {
     List<CoinBalance> findAll();
 
+    List<CoinBalance> findByDate(LocalDate date);
+
     List<CoinBalance> saveAll(List<CoinBalance> coinBalances);
 
     void deleteByExchangeAndDate(String exchange, LocalDate date);

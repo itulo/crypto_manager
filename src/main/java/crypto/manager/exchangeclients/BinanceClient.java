@@ -1,53 +1,83 @@
 package crypto.manager.exchangeclients;
 
-import com.binance.api.client.BinanceApiClientFactory;
-import com.binance.api.client.BinanceApiRestClient;
-import com.binance.api.client.domain.account.Account;
-import com.binance.api.client.domain.account.AssetBalance;
 import crypto.manager.configuration.BinanceClientConfigProperties;
 import crypto.manager.domain.CoinBalance;
 import crypto.manager.domain.ExchangeEnum;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.ExchangeSpecification;
+import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.dto.account.AccountInfo;
+import org.knowm.xchange.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class BinanceClient implements ExchangeClient {
 
-    private BinanceApiRestClient binanceClient;
+    private Exchange binance;
 
     @Autowired
-    public BinanceClient(BinanceClientConfigProperties binanceProps) {
-        BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance(binanceProps.apiKey(), binanceProps.apiSecret());
-        binanceClient = factory.newRestClient();
+    public BinanceClient(BinanceClientConfigProperties binanceProps){
+        ExchangeSpecification exSpec = new BinanceExchange().getDefaultExchangeSpecification();
+        exSpec.setApiKey(binanceProps.apiKey());
+        exSpec.setSecretKey(binanceProps.apiSecret());
+        binance = ExchangeFactory.INSTANCE.createExchange(exSpec);
     }
 
-    public List<CoinBalance> getCoinBalances(){
-        Account account = binanceClient.getAccount(/*BinanceApiConstants.DEFAULT_RECEIVING_WINDOW*/ 60_000L, System.currentTimeMillis());
-        List<AssetBalance> nonZeroBalances = account.getBalances().stream()
-                .filter(b -> Double.parseDouble(b.getFree()) > 0 || Double.parseDouble(b.getLocked()) > 0)
-                .toList();
+    public Collection<CoinBalance> getCoinBalances(){
+        Map<String, CoinBalance> coinBalancesByCoin = new HashMap<>();
+        AccountService accountService = binance.getAccountService();
+        try {
+            AccountInfo accountInfo = accountService.getAccountInfo();
 
-        List<CoinBalance> coinBalances = new ArrayList<>();
-        nonZeroBalances.forEach( b -> {
-            String coin = b.getAsset().startsWith("LD") ? b.getAsset().replace("LD", "") : b.getAsset();
-            double coinValue = CryptoCompareClient.getCoinValueInEur(coin);
+            accountInfo.getWallet().getBalances().values().forEach( balance -> {
+                if(balance.getAvailable().doubleValue() == 0d) return;
 
-            coinBalances.add(
-                    new CoinBalance(
-                            LocalDate.now(),
-                            ExchangeEnum.BINANCE,
-                            coin,
-                            Double.parseDouble(b.getFree()) + Double.parseDouble(b.getLocked()),
-                            coinValue,
-                            "EUR"
-                    )
-            );
-        });
+                String currencyCode = balance.getCurrency().getCurrencyCode();
+                // all coins that are stacked are prefixed by LD, e.g. if you are staking ETH you will have coin LDETH
+                String coin = currencyCode.startsWith("LD") ? currencyCode.replace("LD", "") : currencyCode;
 
-        return coinBalances;
+                double coinValue = CryptoCompareClient.getCoinValueInEur(coin);
+
+                // because you can have the same coin in your Spot wallet (e.g. ETH) and your Earn wallet (e.g. LDETH)
+                // we need to sum them
+                CoinBalance newCoinBalance;
+                if (coinBalancesByCoin.containsKey(coin)){
+                    CoinBalance duplicateCoinBalance = coinBalancesByCoin.get(coin);
+                    newCoinBalance =
+                            new CoinBalance(
+                                    LocalDate.now(),
+                                    ExchangeEnum.BINANCE,
+                                    coin,
+                                    balance.getTotal().doubleValue() + duplicateCoinBalance.getAmount(),
+                                    coinValue,
+                                    "EUR"
+                            );
+                } else {
+                    newCoinBalance =
+                            new CoinBalance(
+                                    LocalDate.now(),
+                                    ExchangeEnum.BINANCE,
+                                    coin,
+                                    balance.getTotal().doubleValue(),
+                                    coinValue,
+                                    "EUR"
+                            );
+                }
+                coinBalancesByCoin.put(coin, newCoinBalance);
+
+            });
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        } finally {
+            return coinBalancesByCoin.values();
+        }
     }
 }

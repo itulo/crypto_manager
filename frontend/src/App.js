@@ -37,7 +37,6 @@ class App extends Component {
     }
 
     const balancesByExchange = this.groupBy(balances, 'exchange');
-    console.log(balancesByExchange);
 
     return (
         <div className="App">

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Spinner } from "reactstrap";
 import ExchangeSummary from './ExchangeSummary'
 
 class App extends Component {
@@ -32,7 +33,11 @@ class App extends Component {
 
     if(!isLoading){
       return (
-        <div>Loading...</div>
+        <div>
+            <Spinner>
+              Loading...
+            </Spinner>
+        </div>
       );
     }
 

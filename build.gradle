@@ -24,9 +24,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// exchange clients
-	implementation 'net.openhft.com.binance.api:binance-api-client:2.17.1'
 	implementation 'org.knowm.xchange:xchange-core:5.0.13'
+	implementation 'org.knowm.xchange:xchange-binance:5.0.13'
+	implementation 'org.knowm.xchange:xchange-bittrex:5.0.13'
 	implementation 'org.knowm.xchange:xchange-coinbasepro:5.0.13'
+	implementation 'org.knowm.xchange:xchange-kraken:5.0.13'
 	// end - exchange clients
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'

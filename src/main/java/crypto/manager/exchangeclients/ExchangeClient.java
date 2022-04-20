@@ -2,8 +2,8 @@ package crypto.manager.exchangeclients;
 
 import crypto.manager.domain.CoinBalance;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ExchangeClient {
-    public List<CoinBalance> getCoinBalances();
+    public Collection<CoinBalance> getCoinBalances();
 }

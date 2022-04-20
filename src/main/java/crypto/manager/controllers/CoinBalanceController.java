@@ -19,7 +19,7 @@ public class CoinBalanceController {
         this.coinBalanceService = coinBalanceService;
     }
 
-    @GetMapping
+    @GetMapping("/today")
     List<CoinBalance> getAllCoinBalanceToday(){
         return coinBalanceService.findByDate(LocalDate.now());
     }

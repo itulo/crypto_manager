@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -31,7 +32,7 @@ public class CoinbaseProClient implements ExchangeClient {
         coinbase = ExchangeFactory.INSTANCE.createExchange(exSpec);
     }
 
-    public List<CoinBalance> getCoinBalances(){
+    public Collection<CoinBalance> getCoinBalances(){
         List<CoinBalance> coinBalances = new ArrayList<>();
         AccountService accountService = coinbase.getAccountService();
         try {

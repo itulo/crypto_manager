@@ -1,12 +1,16 @@
 package crypto.manager.domain;
 
+import org.checkerframework.checker.units.qual.K;
+
+import java.util.Locale;
+
 public enum ExchangeEnum {
-    BINANCE("S"),
-    BITTREX("BI"),
-    COINBASE_PRO("CP"),
-    HITBTC("H"),
-    KRAKEN("K"),
-    KUCOIN("KU");
+    BINANCE("BINANCE"),
+    BITTREX("BITTREX"),
+    COINBASEPRO("COINBASEPRO"),
+    HITBTC("HITBTC"),
+    KRAKEN("KRAKEN"),
+    KUCOIN("KUCOIN");
 
     private String code;
 
@@ -14,7 +18,19 @@ public enum ExchangeEnum {
         this.code = code;
     }
 
-    public String getCode() {
-        return code;
+    public static ExchangeEnum getExchangeEnumFromString(String exchange) {
+        return switch(exchange.toUpperCase(Locale.ROOT)){
+            case "BINANCE" -> BINANCE;
+            case "BITTREX" -> BITTREX;
+            case "COINBASEPRO" -> COINBASEPRO;
+            case "HITBTC" -> HITBTC;
+            case "KRAKEN" -> KRAKEN;
+            case "KUCOIN" -> KUCOIN;
+            default -> throw new IllegalArgumentException("No exchange enum for "+exchange);
+        };
+    }
+
+    public String getCode(){
+        return this.code;
     }
 }

@@ -48,7 +48,7 @@ public class CoinbaseProClient implements ExchangeClient {
                 coinBalances.add(
                         new CoinBalance(
                                 LocalDate.now(),
-                                ExchangeEnum.COINBASE_PRO,
+                                ExchangeEnum.COINBASEPRO,
                                 currencyName,
                                 balance.getTotal().doubleValue(),
                                 coinValue,

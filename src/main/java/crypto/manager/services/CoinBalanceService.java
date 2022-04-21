@@ -3,6 +3,7 @@ package crypto.manager.services;
 import crypto.manager.domain.CoinBalance;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public interface CoinBalanceService {
@@ -10,7 +11,9 @@ public interface CoinBalanceService {
 
     List<CoinBalance> findByDate(LocalDate date);
 
-    List<CoinBalance> saveAll(List<CoinBalance> coinBalances);
+    Collection<CoinBalance> saveAll(Collection<CoinBalance> coinBalances);
 
     void deleteByExchangeAndDate(String exchange, LocalDate date);
+
+    Collection<CoinBalance> replaceExchangeCoinBalancesToday(String exchange, Collection<CoinBalance> coinBalances);
 }

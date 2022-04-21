@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Collapse, Table } from "reactstrap";
+import CoinBalanceRow from './CoinBalanceRow'
 // Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -32,7 +33,7 @@ class ExchangeSummary extends Component {
     return (
         <>
           <div>
-            <Button color="primary" onClick={this.toggle} className={collapseIcon+' mb-2'} style={{padding: '5px'}}> {name}</Button>
+            <Button color="info" onClick={this.toggle} className={collapseIcon+' mb-2'}> {name}</Button>
           </div>
           <Collapse isOpen={!this.state.collapsed}>
               <Table responsive striped bordered size="sm">
@@ -47,13 +48,7 @@ class ExchangeSummary extends Component {
                 </thead>
                 <tbody>
                   {balances.map(b =>
-                  <tr key={b.id}>
-                    <td>{b.date}</td>
-                    <td>{b.coin}</td>
-                    <td>{b.amount}</td>
-                    <td>{b.pricePerUnit}</td>
-                    <td>{Number(b.amount*b.pricePerUnit).toFixed(2)}</td>
-                  </tr>
+                    <CoinBalanceRow balance={b} />
                   )}
                   <tr>
                     <td colSpan={4} style={{textAlign: "right"}}><b>Total </b></td>

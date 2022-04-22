@@ -10,7 +10,6 @@ import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.hitbtc.v2.HitbtcExchange;
 import org.knowm.xchange.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,10 +23,10 @@ public class HitbtcClient implements ExchangeClient {
 
     @Autowired
     public HitbtcClient(HitbtcClientConfigProperties hitbtcProProps){
-        /*ExchangeSpecification exSpec = new HitbtcExchange().getDefaultExchangeSpecification();
+        ExchangeSpecification exSpec = new HitbtcExchange().getDefaultExchangeSpecification();
         exSpec.setApiKey(hitbtcProProps.apiKey());
-        exSpec.setSecretKey(hitbtcProProps.apiSecret());*/
-        hitbtc = ExchangeFactory.INSTANCE.createExchange(HitbtcExchange.class, hitbtcProProps.apiKey(), hitbtcProProps.apiSecret());
+        exSpec.setSecretKey(hitbtcProProps.apiSecret());
+        hitbtc = ExchangeFactory.INSTANCE.createExchange(exSpec);
     }
 
     public Collection<CoinBalance> getCoinBalances(){

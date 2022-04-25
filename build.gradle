@@ -22,12 +22,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
 	// exchange clients
 	implementation 'org.knowm.xchange:xchange-core:5.0.13'
 	implementation 'org.knowm.xchange:xchange-binance:5.0.13'
 	implementation 'org.knowm.xchange:xchange-bittrex:5.0.13'
 	implementation 'org.knowm.xchange:xchange-coinbasepro:5.0.13'
+	implementation 'org.knowm.xchange:xchange-hitbtc:5.0.13'
 	implementation 'org.knowm.xchange:xchange-kraken:5.0.13'
 	// end - exchange clients
 	compileOnly 'org.projectlombok:lombok'
@@ -38,4 +38,11 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// these VM arguments are necessary otherwise we would get exception:
+// InaccessibleObjectException: Unable to make field private static final java.lang.String[] java.net.HttpURLConnection.methods accessible: module java.base does not "opens java.net" to unnamed module
+// while instantiating a BittrexExchange obj
+bootRun {
+	jvmArgs = ["--add-opens", "java.base/java.net=ALL-UNNAMED"]
 }

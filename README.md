@@ -3,7 +3,7 @@ Crypto manager connects to crypto exchanges and fetches your coin balances. You 
 
 Coin balances are fetched every hour.
 
-The backend use the Spring framework, the  frontend React.
+The backend uses the Spring framework, the frontend is in React.
 
 ## Getting started
 ### Database
@@ -13,12 +13,15 @@ You need a MySQL database. Create database and user with these instructions:
     CREATE USER 'crypto' IDENTIFIED BY 'crypto';
     GRANT ALL PRIVILEGES ON crypto_manager.* TO 'crypto'@'%';
 
-### Add your exchanges' api keys
+### Add your exchanges' and their api keys
 In application.properties `exchanges.*`
 
 ## Run
 ### Backend
     ./gradlew bootRun
+NOTE: if you run spring through your IDE you need to add these JVM arguments:
+
+    --add-opens java.base/java.net=ALL-UNNAMED
 
 ### Frontend
     cd frontend

@@ -36,7 +36,7 @@ class ExchangeSummary extends Component {
             <Button color="info" onClick={this.toggle} className={collapseIcon+' mb-2'}> {name}</Button>
           </div>
           <Collapse isOpen={!this.state.collapsed}>
-              <Table responsive striped bordered size="sm">
+              <Table responsive striped bordered className={"w-50"}>
                 <thead>
                   <tr>
                     <th>Date</th>

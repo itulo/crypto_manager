@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
 import { Spinner } from "reactstrap";
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import classnames from 'classnames';
+import Summary from './Summary'
 import ExchangeSummary from './ExchangeSummary'
 
 class App extends Component {
-  state = {
-    balances: [],
-    isLoading: false
-  };
+  constructor(props){
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      activeTab: '1',
+      balances: [],
+      isLoading: false
+    };
+  }
+
+  toggle(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
 
   async componentDidMount() {
     const response = await fetch('/balances/today');
@@ -46,17 +63,39 @@ class App extends Component {
     return (
         <div className="App">
           <header className="App-header">
-            <div className="App-intro">
-              <h1>Balances</h1>
-              {Object.entries(balancesByExchange).map( ([key, value]) =>
-                  <ExchangeSummary
-                    key={key}
-                    name={key}
-                    balances={value}
-                  />
-              )}
-            </div>
+
+            <Nav tabs>
+              <NavItem>
+                <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggle('1'); }}>
+                  Summary
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggle('2'); }}>
+                  Exchange Summary
+                </NavLink>
+              </NavItem>
+            </Nav>
           </header>
+
+
+          <TabContent activeTab={this.state.activeTab}>
+            <TabPane tabId="1">
+              <Summary
+                balancesByExchange={balancesByExchange}
+              />
+            </TabPane>
+            <TabPane tabId="2">
+              {Object.entries(balancesByExchange).map( ([key, value]) =>
+                <ExchangeSummary
+                  key={key}
+                  name={key}
+                  balances={value}
+                />
+              )}
+            </TabPane>
+          </TabContent>
+
         </div>
     );
   }

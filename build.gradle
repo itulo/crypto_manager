@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.knowm.xchange:xchange-coinbasepro:5.0.13'
 	implementation 'org.knowm.xchange:xchange-hitbtc:5.0.13'
 	implementation 'org.knowm.xchange:xchange-kraken:5.0.13'
+	implementation 'org.knowm.xchange:xchange-kucoin:5.0.13'
 	// end - exchange clients
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'

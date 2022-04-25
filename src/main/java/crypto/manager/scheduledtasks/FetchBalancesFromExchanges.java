@@ -6,6 +6,7 @@ import crypto.manager.configuration.CoinbaseProClientConfigProperties;
 import crypto.manager.configuration.ExchangesProperties;
 import crypto.manager.configuration.HitbtcClientConfigProperties;
 import crypto.manager.configuration.KrakenClientConfigProperties;
+import crypto.manager.configuration.KucoinClientConfigProperties;
 import crypto.manager.domain.CoinBalance;
 import crypto.manager.exchangeclients.BinanceClient;
 import crypto.manager.exchangeclients.BittrexClient;
@@ -13,6 +14,7 @@ import crypto.manager.exchangeclients.CoinbaseProClient;
 import crypto.manager.exchangeclients.ExchangeClient;
 import crypto.manager.exchangeclients.HitbtcClient;
 import crypto.manager.exchangeclients.KrakenClient;
+import crypto.manager.exchangeclients.KucoinClient;
 import crypto.manager.services.CoinBalanceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,25 +32,28 @@ public class FetchBalancesFromExchanges {
 
     private final CoinBalanceService coinBalanceService;
     private final BinanceClientConfigProperties binanceProps;
+    private final BittrexClientConfigProperties bittrexProps;
     private final CoinbaseProClientConfigProperties coinbaseProProps;
     private final HitbtcClientConfigProperties hitbtcProps;
     private final KrakenClientConfigProperties krakenProps;
-    private final BittrexClientConfigProperties bittrexProps;
+    private final KucoinClientConfigProperties kucoinProps;
     private final ExchangesProperties exchangesProps;
 
     public FetchBalancesFromExchanges(CoinBalanceService coinBalanceService,
                                       BinanceClientConfigProperties binanceProps,
+                                      BittrexClientConfigProperties bittrexProps,
                                       CoinbaseProClientConfigProperties coinbaseProProps,
                                       HitbtcClientConfigProperties hitbtcProps,
                                       KrakenClientConfigProperties krakenProps,
-                                      BittrexClientConfigProperties bittrexProps,
+                                      KucoinClientConfigProperties kucoinProps,
                                       ExchangesProperties exchangesProps) {
         this.coinBalanceService = coinBalanceService;
         this.binanceProps = binanceProps;
+        this.bittrexProps = bittrexProps;
         this.coinbaseProProps = coinbaseProProps;
         this.hitbtcProps = hitbtcProps;
         this.krakenProps = krakenProps;
-        this.bittrexProps = bittrexProps;
+        this.kucoinProps = kucoinProps;
         this.exchangesProps = exchangesProps;
     }
 
@@ -59,6 +64,7 @@ public class FetchBalancesFromExchanges {
             case "coinbasepro" -> new CoinbaseProClient(this.coinbaseProProps);
             case "hitbtc" -> new HitbtcClient(this.hitbtcProps);
             case "kraken" -> new KrakenClient(this.krakenProps);
+            case "kucoin" -> new KucoinClient(this.kucoinProps);
             default -> throw new IllegalArgumentException(client+" is not a valid client exchange");
         };
     }

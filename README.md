@@ -19,7 +19,7 @@ In application.properties `exchanges.*`
 ## Run
 ### Backend
     ./gradlew bootRun
-NOTE: if you run spring through your IDE you need to add these JVM arguments:
+NOTE: if you run spring through your IDE then add these JVM arguments:
 
     --add-opens java.base/java.net=ALL-UNNAMED
 

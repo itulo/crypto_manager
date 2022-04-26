@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from "reactstrap";
 
 class CoinBalanceRow extends Component {
   render(){
@@ -11,6 +12,9 @@ class CoinBalanceRow extends Component {
         <td>{balance.amount}</td>
         <td>{balance.pricePerUnit}</td>
         <td>{Number(balance.amount*balance.pricePerUnit).toFixed(2)}</td>
+        <td>
+          <Button color="info" onClick={() => this.props.onDeleteBalance(balance.id)} className="bi bi-trash" />
+        </td>
        </tr>
     );
   }

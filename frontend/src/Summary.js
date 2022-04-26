@@ -24,7 +24,7 @@ class Summary extends Component {
             </thead>
             <tbody>
                 {Object.entries(balancesByExchange).map( ([key, value]) =>
-                  <tr>
+                  <tr key={key}>
                     <td>{key}</td>
                     <td>{Number(this.sumAll(value)).toFixed(2)}</td>
                   </tr>

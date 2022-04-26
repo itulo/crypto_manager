@@ -15,6 +15,19 @@ class ExchangeSummary extends Component {
 
     // This binding is necessary to make `this` work in the callback
     this.toggle = this.toggle.bind(this);
+    this.deleteBalance = this.deleteBalance.bind(this);
+  }
+
+  async deleteBalance(balanceId){
+    const response = await fetch('/balances/' + balanceId, {
+      method: 'DELETE',
+    });
+    if( response.status >= 200 && response.status <= 299){
+      const newBalances = this.state.balances.filter(b => b.id !== balanceId);
+      this.setState({
+        balances: newBalances
+      });
+    }
   }
 
   toggle() {
@@ -44,14 +57,18 @@ class ExchangeSummary extends Component {
                     <th>Amount</th>
                     <th>Price Per Unit</th>
                     <th>Total (EUR)</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {balances.map(b =>
-                    <CoinBalanceRow balance={b} />
+                    <CoinBalanceRow
+                      key={b.id}
+                      balance={b}
+                      onDeleteBalance={this.deleteBalance}/>
                   )}
                   <tr>
-                    <td colSpan={4} style={{textAlign: "right"}}><b>Total </b></td>
+                    <td colSpan={4} className="text-end"><b>Total </b></td>
                     <td><b>{Number(total).toFixed(2)}</b></td>
                   </tr>
                 </tbody>

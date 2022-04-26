@@ -13,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class CoinbaseProClient implements ExchangeClient {
@@ -33,29 +31,16 @@ public class CoinbaseProClient implements ExchangeClient {
     }
 
     public Collection<CoinBalance> getCoinBalances(){
-        List<CoinBalance> coinBalances = new ArrayList<>();
+        Collection<CoinBalance> coinBalances = new ArrayList<>();
         AccountService accountService = coinbase.getAccountService();
         try {
             AccountInfo accountInfo = accountService.getAccountInfo();
 
             // TODO allow to choose a specific portfolio
-            accountInfo.getWallet().getBalances().forEach((currency, balance) -> {
-                if(balance.getAvailable().doubleValue() == 0d) return;
+            coinBalances = ExchangeClientHelper.getCoinBalances(
+                    accountInfo.getWallet().getBalances(),
+                    ExchangeEnum.COINBASEPRO);
 
-                String currencyName = currency.getCurrencyCode();
-                double coinValue = CryptoCompareClient.getCoinValueInEur(currencyName);
-
-                coinBalances.add(
-                        new CoinBalance(
-                                LocalDate.now(),
-                                ExchangeEnum.COINBASEPRO,
-                                currencyName,
-                                balance.getTotal().doubleValue(),
-                                coinValue,
-                                "EUR"
-                        )
-                );
-            });
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         } finally {

@@ -12,10 +12,8 @@ import org.knowm.xchange.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class KucoinClient implements ExchangeClient {
 
@@ -31,28 +29,15 @@ public class KucoinClient implements ExchangeClient {
     }
 
     public Collection<CoinBalance> getCoinBalances(){
-        List<CoinBalance> coinBalances = new ArrayList<>();
+        Collection<CoinBalance> coinBalances = new ArrayList<>();
         AccountService accountService = kucoin.getAccountService();
         try {
             AccountInfo accountInfo = accountService.getAccountInfo();
 
-            accountInfo.getWallet("main").getBalances().forEach((currency, balance) -> {
-                if(balance.getAvailable().doubleValue() == 0d) return;
+            coinBalances = ExchangeClientHelper.getCoinBalances(
+                    accountInfo.getWallet("main").getBalances(),
+                    ExchangeEnum.KUCOIN);
 
-                String currencyName = currency.getCurrencyCode();
-                double coinValue = CryptoCompareClient.getCoinValueInEur(currencyName);
-
-                coinBalances.add(
-                        new CoinBalance(
-                                LocalDate.now(),
-                                ExchangeEnum.KUCOIN,
-                                currencyName,
-                                balance.getTotal().doubleValue(),
-                                coinValue,
-                                "EUR"
-                        )
-                );
-            });
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         } finally {

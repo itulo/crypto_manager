@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CoinBalanceServiceImpl implements CoinBalanceService {
@@ -25,6 +26,11 @@ public class CoinBalanceServiceImpl implements CoinBalanceService {
     }
 
     @Override
+    public Optional<CoinBalance> findById(long id) {
+        return coinBalanceRepository.findById(id);
+    }
+
+    @Override
     public List<CoinBalance> findByDate(LocalDate date) {
         return coinBalanceRepository.findByDate(date);
     }
@@ -34,17 +40,22 @@ public class CoinBalanceServiceImpl implements CoinBalanceService {
         return coinBalanceRepository.saveAllAndFlush(coinBalances);
     }
 
-    @Override
-    public void deleteByExchangeAndDate(String exchange, LocalDate date) {
-        ExchangeEnum exchangeEnum = ExchangeEnum.getExchangeEnumFromString(exchange);
-        coinBalanceRepository.deleteByExchangeAndDate(exchangeEnum, date);
-    }
-
     @Transactional
     @Override
     public Collection<CoinBalance> replaceExchangeCoinBalancesToday(String exchange, Collection<CoinBalance> coinBalances) {
         ExchangeEnum exchangeEnum = ExchangeEnum.getExchangeEnumFromString(exchange);
         coinBalanceRepository.deleteByExchangeAndDate(exchangeEnum, LocalDate.now());
         return coinBalanceRepository.saveAll(coinBalances);
+    }
+
+    @Override
+    public void deleteByExchangeAndDate(String exchange, LocalDate date) {
+        ExchangeEnum exchangeEnum = ExchangeEnum.getExchangeEnumFromString(exchange);
+        coinBalanceRepository.deleteByExchangeAndDate(exchangeEnum, date);
+    }
+
+    @Override
+    public void deleteById(long id) {
+        coinBalanceRepository.deleteById(id);
     }
 }

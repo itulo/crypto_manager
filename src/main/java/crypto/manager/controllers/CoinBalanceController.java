@@ -2,6 +2,7 @@ package crypto.manager.controllers;
 
 import crypto.manager.domain.CoinBalance;
 import crypto.manager.services.CoinBalanceService;
+import crypto.manager.services.RabbitMqSender;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +21,12 @@ import java.util.Optional;
 public class CoinBalanceController {
 
     private final CoinBalanceService coinBalanceService;
+    private final RabbitMqSender rabbitMqSender;
 
-    public CoinBalanceController(CoinBalanceService coinBalanceService) {
+    public CoinBalanceController(CoinBalanceService coinBalanceService,
+                                 RabbitMqSender rabbitMqSender) {
         this.coinBalanceService = coinBalanceService;
+        this.rabbitMqSender = rabbitMqSender;
     }
 
     @GetMapping("/today")
@@ -36,8 +40,8 @@ public class CoinBalanceController {
         Optional<CoinBalance> cb = coinBalanceService.findById(id);
         if(!cb.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         }
-        coinBalanceService.deleteById(id);
+        //coinBalanceService.deleteById(id);
+        rabbitMqSender.sendCoinBalanceIdForDeletion(id);
     }
 }

@@ -1,11 +1,14 @@
 # Crypto Manager
-Crypto manager connects to crypto exchanges and fetches your coin balances. You can see a summary in your browser.
+Crypto manager connects to crypto exchanges, fetches your coin balances and stores them into a database. You can see a summary in your browser.
 
 Coin balances are fetched every hour.
 
 The backend uses the Spring framework, the frontend is in React.
 
 ## Getting started
+### RabbitMQ
+[Install RabbitMQ](https://www.rabbitmq.com/download.html).
+
 ### Database
 You need a MySQL database. Create database and user with these instructions:
 
@@ -13,8 +16,12 @@ You need a MySQL database. Create database and user with these instructions:
     CREATE USER 'crypto' IDENTIFIED BY 'crypto';
     GRANT ALL PRIVILEGES ON crypto_manager.* TO 'crypto'@'%';
 
-### Add your exchanges' and their api keys
+Tables will be automatically created when running the app.
+
+### Add your exchanges' and api keys
 In application.properties `exchanges.*`
+
+Currently exchanges supported are: binance, bittrex, coinbasepro, hitbtc, kraken, kucoin. But others can be added.
 
 ## Run
 ### Backend

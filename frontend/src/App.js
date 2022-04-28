@@ -9,15 +9,35 @@ class App extends Component {
   constructor(props){
     super(props);
 
-    this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: '1',
       balances: [],
-      isLoading: false
+      isLoading: true
     };
+
+    // This binding is necessary to make `this` work in the callback
+    this.toggleTab = this.toggleTab.bind(this);
+    this.deleteBalance = this.deleteBalance.bind(this);
   }
 
-  toggle(tab) {
+  async deleteBalance(balanceId){
+      this.setState({
+        isLoading: true
+      });
+      console.log('deleteBalance');
+      const response = await fetch('/balances/' + balanceId, {
+        method: 'DELETE',
+      });
+      if(response.status >= 200 && response.status <= 299){
+        const newBalances = this.state.balances.filter(b => b.id !== balanceId);
+        this.setState({
+          balances: newBalances,
+          isLoading: false
+        });
+      }
+    }
+
+  toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
@@ -30,7 +50,7 @@ class App extends Component {
     const body = await response.json();
     this.setState({
       balances: body,
-      isLoading: true
+      isLoading: false
     });
   }
 
@@ -48,7 +68,7 @@ class App extends Component {
   render() {
     const {balances, isLoading} = this.state;
 
-    if(!isLoading){
+    if(isLoading){
       return (
         <div>
             <Spinner>
@@ -66,12 +86,12 @@ class App extends Component {
 
             <Nav tabs>
               <NavItem>
-                <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggle('1'); }}>
+                <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggleTab('1'); }}>
                   Summary
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggle('2'); }}>
+                <NavLink className={classnames({ active: this.state.activeTab === '2' })} onClick={() => { this.toggleTab('2'); }}>
                   Exchange Summary
                 </NavLink>
               </NavItem>
@@ -91,6 +111,7 @@ class App extends Component {
                   key={key}
                   name={key}
                   balances={value}
+                  onDeleteBalance={this.deleteBalance}
                 />
               )}
             </TabPane>

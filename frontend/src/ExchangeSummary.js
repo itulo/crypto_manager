@@ -15,19 +15,6 @@ class ExchangeSummary extends Component {
 
     // This binding is necessary to make `this` work in the callback
     this.toggle = this.toggle.bind(this);
-    this.deleteBalance = this.deleteBalance.bind(this);
-  }
-
-  async deleteBalance(balanceId){
-    const response = await fetch('/balances/' + balanceId, {
-      method: 'DELETE',
-    });
-    if( response.status >= 200 && response.status <= 299){
-      const newBalances = this.state.balances.filter(b => b.id !== balanceId);
-      this.setState({
-        balances: newBalances
-      });
-    }
   }
 
   toggle() {
@@ -44,6 +31,7 @@ class ExchangeSummary extends Component {
     const collapseIcon = collapsed ? "bi bi-arrows-angle-expand" : "bi bi-arrows-angle-contract"
 
     return (
+      //TODO when user removes a balance row and components re-render, collapsed exchanges are not collapsed anymore, store as state
         <>
           <div>
             <Button color="info" onClick={this.toggle} className={collapseIcon+' mb-2'}> {name}</Button>
@@ -65,7 +53,7 @@ class ExchangeSummary extends Component {
                     <CoinBalanceRow
                       key={b.id}
                       balance={b}
-                      onDeleteBalance={this.deleteBalance}/>
+                      onDeleteBalance={this.props.onDeleteBalance}/>
                   )}
                   <tr>
                     <td colSpan={4} className="text-end"><b>Total </b></td>

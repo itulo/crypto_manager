@@ -48,8 +48,11 @@ class App extends Component {
   async componentDidMount() {
     const response = await fetch('/balances/today');
     const body = await response.json();
+
+    // remove all coin balances whose value in EUR is < 0.01
+    const balances = body.filter(b => b.amount*b.pricePerUnit > 0.01);
     this.setState({
-      balances: body,
+      balances: balances,
       isLoading: false
     });
   }

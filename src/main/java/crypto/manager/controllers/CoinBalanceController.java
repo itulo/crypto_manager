@@ -35,13 +35,12 @@ public class CoinBalanceController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     void deleteCoinBalanceById(@PathVariable Long id){
         Optional<CoinBalance> cb = coinBalanceService.findById(id);
         if(!cb.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        //coinBalanceService.deleteById(id);
         rabbitMqSender.sendCoinBalanceIdForDeletion(id);
     }
 }

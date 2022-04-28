@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * cryptocompare.com
@@ -20,7 +19,7 @@ public class CryptoCompareClient {
     private static final RestTemplate restTemplate = new RestTemplate();
 
     // TODO make it a time based cache
-    private final static ConcurrentMap<String, Double> coinValueInFiat = new ConcurrentHashMap<>();
+    private final static Map<String, Double> coinValueInFiat = new HashMap<>();
 
     private final static Map<String, String> coinOtherName = Map.of(
             "iota", "miota"     //binance calls it iota, cryptocompare calls it miota
@@ -38,7 +37,7 @@ public class CryptoCompareClient {
     private static double processResponse(CryptoCompareResponseBody body, String coin){
         // TODO retry max 3 times instead of trying forever and use backoff to increase sleep time
         if(body.response() != null && body.message() != null && body.message().contains("rate limit")){
-            log.info("CryptoCompare says we have reached the rate limit, wait and retry!");
+            log.info("CryptoCompare: reached the rate limit, wait and retry!");
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

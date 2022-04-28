@@ -37,6 +37,7 @@ public class KrakenClient implements ExchangeClient{
             coinBalances = ExchangeClientHelper.getCoinBalancesWithFunction(
                     accountInfo.getWallet("margin").getBalances().values(),
                     ExchangeEnum.KRAKEN,
+                    // all coins that are stacked are postfixed by .S, e.g. if you are staking ETH you will have coin ETH.S
                     (currencyCode) -> {
                         return currencyCode.endsWith(".S") ? currencyCode.replace(".S", "") : currencyCode;
                     });

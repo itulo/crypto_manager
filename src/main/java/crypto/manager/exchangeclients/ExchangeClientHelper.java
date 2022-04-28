@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class ExchangeClientHelper {
 
     /**
-     * Provide a list of coin balances from the balances received from the exchange
+     * Provide a a Collection<CoinBalance> from the balances received from the exchange
      *
      * @param balances
      * @param exchange
@@ -49,8 +49,8 @@ public class ExchangeClientHelper {
     }
 
     /**
-     * Provide a list of coin balances from the balances received from the exchange
-     * With a function manipulate coin names that are different when they are in spot wallet or earn/staking wallet
+     * Provide a Collection<CoinBalance> from the balances received from the exchange.
+     * With a function to manipulate coin names that are different when they are in spot wallet and earn/staking wallet
      *
      * @param balances
      * @param exchange
@@ -58,22 +58,16 @@ public class ExchangeClientHelper {
      */
     public static Collection<CoinBalance> getCoinBalancesWithFunction(Collection<Balance> balances,
                                                                 ExchangeEnum exchange,
-                                                                Function<String, String> exctractCoinName
+                                                                Function<String, String> extractCoinName
     ){
         Map<String, CoinBalance> coinBalancesByCoin = new HashMap<>();
 
         balances.forEach( balance -> {
             if(balance.getAvailable().doubleValue() == 0d) return;
 
-            //String currencyCode = balance.getCurrency().getCurrencyCode();
-            // all coins that are stacked are prefixed by LD, e.g. if you are staking ETH you will have coin LDETH
-            //String coin = currencyCode.startsWith("LD") ? currencyCode.replace("LD", "") : currencyCode;
-            String coin = exctractCoinName.apply(balance.getCurrency().getCurrencyCode());
-
+            String coin = extractCoinName.apply(balance.getCurrency().getCurrencyCode());
             double coinValue = CryptoCompareClient.getCoinValueInEur(coin);
-
-            // because you can have the same coin in your Spot wallet (e.g. ETH) and your Earn wallet (e.g. LDETH)
-            // we need to sum them
+            // there may be the same coin in Spot and Earn/Staking wallets, sum them
             CoinBalance newCoinBalance;
             if (coinBalancesByCoin.containsKey(coin)){
                 CoinBalance duplicateCoinBalance = coinBalancesByCoin.get(coin);

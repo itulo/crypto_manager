@@ -38,6 +38,7 @@ public class BinanceClient implements ExchangeClient {
             coinBalances = ExchangeClientHelper.getCoinBalancesWithFunction(
                     accountInfo.getWallet().getBalances().values(),
                     ExchangeEnum.BINANCE,
+                    // all coins that are stacked are prefixed by LD, e.g. if you are staking ETH you will have coin LDETH
                     (currencyCode) -> {
                         return currencyCode.startsWith("LD") ? currencyCode.replace("LD", "") : currencyCode;
                     });

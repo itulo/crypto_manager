@@ -37,6 +37,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	testImplementation 'org.mockito:mockito-inline:4.5.1'
 }
 
 tasks.named('test') {

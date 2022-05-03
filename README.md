@@ -1,5 +1,5 @@
 # Crypto Manager
-Crypto manager connects to crypto exchanges, fetches your coin balances and stores them into a database. You can see a summary in your browser.
+Crypto manager connects to crypto exchanges, fetches your coin balances and stores them into a local database. You can see a summary in your browser.
 
 Coin balances are fetched every hour.
 

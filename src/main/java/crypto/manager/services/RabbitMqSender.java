@@ -1,5 +1,6 @@
 package crypto.manager.services;
 
+import crypto.manager.domain.CoinBalance;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +17,16 @@ public class RabbitMqSender {
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
-
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingkey;
+    @Value("${spring.rabbitmq.delete-routingkey}")
+    private String deleteRoutingkey;
+    @Value("${spring.rabbitmq.update-routingkey}")
+    private String updateRoutingkey;
 
     public void sendCoinBalanceIdForDeletion(long id){
-        rabbitTemplate.convertAndSend(exchange, routingkey, id);
+        rabbitTemplate.convertAndSend(exchange, deleteRoutingkey, id);
+    }
+
+    public void sendCoinBalanceIdForUpdate(CoinBalance coinBalance){
+        rabbitTemplate.convertAndSend(exchange, updateRoutingkey, coinBalance);
     }
 }

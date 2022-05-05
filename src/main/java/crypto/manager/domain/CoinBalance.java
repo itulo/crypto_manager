@@ -10,12 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @Entity
 @NoArgsConstructor
-public class CoinBalance {
+public class CoinBalance implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

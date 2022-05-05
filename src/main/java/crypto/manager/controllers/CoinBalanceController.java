@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,17 @@ public class CoinBalanceController {
     @GetMapping("/today")
     List<CoinBalance> getAllCoinBalanceToday(){
         return coinBalanceService.findByDate(LocalDate.now());
+    }
+
+    @PutMapping("/")
+    @RequestMapping(consumes = "application/json")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    void updateCoinBalance(@RequestBody CoinBalance coinBalance){
+        Optional<CoinBalance> cb = coinBalanceService.findById(coinBalance.getId());
+        if(!cb.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        rabbitMqSender.sendCoinBalanceIdForUpdate(coinBalance);
     }
 
     @DeleteMapping("/{id}")

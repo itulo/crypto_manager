@@ -31,5 +31,7 @@ NOTE: if you run spring through your IDE then add these JVM arguments:
     --add-opens java.base/java.net=ALL-UNNAMED
 
 ### Frontend
+Note: as of now it does not work with node 18, use lower version
+
     cd frontend
     npm start
